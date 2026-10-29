@@ -6,14 +6,13 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-from datetime import datetime
+from datetime import datetime, timezone
 from numbers import Integral
 
-from pytz import UTC
 from dateutil.parser import parse
 from six import binary_type, text_type, integer_types, PY2
 
-EPOCH = UTC.localize(datetime.utcfromtimestamp(0))
+EPOCH = datetime.fromtimestamp(0, timezone.utc)
 
 
 def _to_nanos(timestamp):
@@ -33,7 +32,7 @@ def _convert_timestamp(timestamp, precision=None):
 
     if isinstance(timestamp, datetime):
         if not timestamp.tzinfo:
-            timestamp = UTC.localize(timestamp)
+            timestamp = timestamp.replace(tzinfo=timezone.utc)
 
         ns = _to_nanos(timestamp)
         if precision is None or precision == 'n':
